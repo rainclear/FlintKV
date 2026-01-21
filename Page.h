@@ -1,3 +1,6 @@
+#ifndef PAGE_H
+#define PAGE_H
+
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -21,3 +24,5 @@ struct IndexEntry {
 #pragma pack(pop)
 
 const size_t PAGE_SIZE = 4096;
+
+#endif // PAGE_H
