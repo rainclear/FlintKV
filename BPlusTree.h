@@ -264,10 +264,22 @@ public:
     }
 
     void put(const std::string& key, const std::string& value) {
+        // 1. Enforce Key Length (Internal node constraint)
         assert(key.length() <= 15 && "Key length exceeds limit of 15");
+
+        // 2. Enforce Total Record Size (Slotted Page constraint)
+        // We reserve roughly 100 bytes for headers and slot metadata
+        const size_t MAX_RECORD_SIZE = PAGE_SIZE - 100;
+        size_t entry_size = key.length() + value.length() + 2;
+
+        if (entry_size > MAX_RECORD_SIZE) {
+            std::cerr << "Error: Record too large (" << entry_size
+                    << " bytes). Max allowed is " << MAX_RECORD_SIZE << " bytes." << std::endl;
+            return;
+        }
+
         uint32_t leaf_id = findLeaf(root_id, key);
         PageHeader* h = (PageHeader*)pool.getPage(leaf_id);
-        size_t entry_size = key.length() + value.length() + 2;
         size_t needed = sizeof(PageHeader) + (h->num_slots + 1) * sizeof(Slot) + entry_size;
 
         if (h->free_space_offset < needed) splitLeaf(leaf_id, key, value);

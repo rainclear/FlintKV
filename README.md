@@ -14,6 +14,13 @@ The name "Flint" represents the engine's goal: being small, sparky, and an essen
 * **Lazy Deletion:** Supports record removal with automated page defragmentation to reclaim space.
 
 
+## ⚠️ Current Limitations
+
+* **Fixed Internal Key Length:** Keys in internal nodes are capped at **15 characters** to optimize traversal speed through fixed-length memory alignment.
+* **Maximum Record Size:** Total record size (Key + Value) cannot exceed **~4KB**.
+    * **Note:** FlintKV currently does not support "Overflow Pages." If you need to store large blobs (images, large text), it is recommended to store the file path as the value and keep the actual data on the external filesystem.
+* **Single Threaded:** The engine does not currently implement latches or locks; it is intended for single-threaded usage.
+
 
 ---
 
